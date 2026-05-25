@@ -772,18 +772,21 @@ select.form-input { cursor: pointer; background-image: url("data:image/svg+xml,%
       </div>
     </div>
 
-    <h1 class="page-title" style="margin-top:16px;" id="cam-title">Hold your ID up to the camera</h1>
-    <p class="page-sub" id="cam-sub">Hold your passport, national ID or driving licence in front of the camera. Keep it steady — all four corners must be visible.</p>
+    <!-- 1. Page title — always visible -->
+    <h1 class="page-title" style="margin-top:16px;" id="cam-title">ID Verification</h1>
 
-    <!-- Document type pills — shown only in step 1 -->
-    <div id="doc-type-wrap" style="margin-bottom:16px;">
+    <!-- 2. Document type selector — choose before camera activates -->
+    <div id="doc-type-wrap" style="margin-bottom:20px;">
       <label class="form-label">Document type</label>
       <div class="pill-tabs">
-        <button class="pill-tab active" onclick="selDoc(this)">Passport</button>
-        <button class="pill-tab" onclick="selDoc(this)">National ID</button>
-        <button class="pill-tab" onclick="selDoc(this)">Driving Licence</button>
+        <button class="pill-tab active" onclick="selDoc(this, 'Passport')">Passport</button>
+        <button class="pill-tab" onclick="selDoc(this, 'National ID')">National ID</button>
+        <button class="pill-tab" onclick="selDoc(this, 'Driving Licence')">Driving Licence</button>
       </div>
     </div>
+
+    <!-- 3. Dynamic instruction — updates when doc type changes -->
+    <p class="page-sub" id="cam-sub" style="margin-bottom:16px;">Hold your <strong id="doc-type-label">Passport</strong> in front of the camera and keep it steady within the frame.</p>
 
     <!-- Camera frame — shared for both steps, overlay changes -->
     <div class="camera-frame" id="cam-frame" style="max-height:320px;">
@@ -980,32 +983,58 @@ select.form-input { cursor: pointer; background-image: url("data:image/svg+xml,%
       <div class="card-row"><span class="cr-key">ID number</span><span class="cr-val mono" id="id-num">•••••••••</span><a class="cr-link" href="#" onclick="revealID(event)">Reveal</a></div>
     </div>
 
-    <div class="banner amber">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>Your ID shows <strong>citizenship</strong>, not where you currently live. Please confirm your country of residence — this determines which child safety rules apply to your account.</span>
-    </div>
+    <!-- Parent country of residence — same pattern as child location -->
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;margin-bottom:0;">
+      <div style="background:var(--bg-hero);padding:13px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="font-family:var(--font-head);font-size:14px;font-weight:600;">Your country of residence</h3>
+      </div>
+      <!-- Same as ID country toggle -->
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleSameAsID()">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A55C8" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M13 10h4M13 14h4"/></svg>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-primary);">Same country as my ID</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:1px;">United Kingdom</div>
+            </div>
+          </div>
+          <div id="sid-toggle" style="width:42px;height:24px;border-radius:12px;background:var(--brand-blue);position:relative;transition:background 0.2s;flex-shrink:0;">
+            <div id="sid-knob" style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;top:3px;left:21px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
+          </div>
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label class="form-label" for="rv-country">Your country of residence <span style="color:var(--red)">*</span></label>
-      <select class="form-input" id="rv-country" onchange="checkRvParentState(); updateReviewBtn()">
-        <option value="">Select your country</option>
-        <option>United Kingdom</option><option value="US">United States</option>
-        <option value="AU">Australia</option><option value="CA">Canada</option>
-        <option>Ireland</option><option>New Zealand</option>
-        <option>Sri Lanka</option><option>India</option>
-        <option value="DE">Germany</option><option>France</option><option>Other</option>
-      </select>
-      <p class="form-helper">Select the country where you normally live</p>
+      <!-- Alternative country — shown when toggle is OFF -->
+      <div id="alt-country-wrap" style="display:none;padding:16px 20px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#BA7517" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size:12px;color:#BA7517;font-weight:500;">Your ID shows citizenship, not where you currently live</span>
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label" for="rv-country">Country <span style="color:var(--red)">*</span></label>
+          <select class="form-input" id="rv-country" onchange="checkRvParentState(); updateReviewBtn()">
+            <option value="">Select your country</option>
+            <option>United Kingdom</option><option value="US">United States</option>
+            <option value="AU">Australia</option><option value="CA">Canada</option>
+            <option>Ireland</option><option>New Zealand</option>
+            <option>Sri Lanka</option><option>India</option>
+            <option value="DE">Germany</option><option>France</option><option>Other</option>
+          </select>
+          <p class="form-helper">Select the country where you normally live</p>
+        </div>
+        <div class="form-group" id="rv-parent-state-wrap" style="display:none;margin-bottom:0;">
+          <label class="form-label" for="rv-pstate" id="rv-pstate-lbl">State / Province</label>
+          <select class="form-input" id="rv-pstate" onchange="updateReviewBtn()">
+            <option value="">Select</option>
+            <option>California</option><option>Texas</option><option>New York</option>
+            <option>Florida</option><option>Illinois</option><option>Pennsylvania</option><option>Other</option>
+          </select>
+          <p class="form-helper" id="rv-pstate-helper">eSafety laws vary by state/province in your country</p>
+        </div>
+      </div>
     </div>
-    <div class="form-group" id="rv-parent-state-wrap" style="display:none;">
-      <label class="form-label" for="rv-pstate" id="rv-pstate-lbl">State / Province</label>
-      <select class="form-input" id="rv-pstate" onchange="updateReviewBtn()">
-        <option value="">Select</option>
-        <option>California</option><option>Texas</option><option>New York</option>
-        <option>Florida</option><option>Illinois</option><option>Pennsylvania</option><option>Other</option>
-      </select>
-      <p class="form-helper" id="rv-pstate-helper">eSafety laws vary by state/province in your country</p>
-    </div>
+    <!-- Bottom radius fix when alt country is hidden -->
+    <div style="height:0;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);margin-bottom:20px;" id="country-card-footer"></div>
 
     <!-- Child location — country + state only per PO confirmation -->
     <div class="card" style="margin-bottom:0;border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
@@ -1403,10 +1432,15 @@ function selectMethod(m) {
 
 
 // DOCUMENT TYPE PILL
-function selDoc(el) {
+function selDoc(el, docType) {
   var tabs = document.querySelectorAll('.pill-tab');
   for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
   el.classList.add('active');
+  // Update dynamic instruction text
+  if (docType) {
+    var lbl = document.getElementById('doc-type-label');
+    if (lbl) lbl.textContent = docType;
+  }
 }
 function toggleTips() {
   var btn = document.getElementById('tips-btn');
@@ -1449,8 +1483,8 @@ function resetCameraToStep1() {
   // Title + sub
   var title = document.getElementById('cam-title');
   var sub = document.getElementById('cam-sub');
-  if (title) title.textContent = 'Hold your ID up to the camera';
-  if (sub) sub.textContent = 'Hold your passport, national ID or driving licence in front of the camera. Keep it steady — all four corners must be visible.';
+  if (title) title.textContent = 'ID Verification';
+  if (sub) sub.innerHTML = 'Hold your <strong id="doc-type-label">Passport</strong> in front of the camera and keep it steady within the frame.';
 
   // Show ID overlay, hide face overlay
   document.getElementById('id-capture-overlay').style.display = 'flex';
@@ -1704,6 +1738,35 @@ function runProcessing() {
   setTimeout(next, 400);
 }
 
+// SAME AS ID COUNTRY TOGGLE
+var sameAsID = true;
+function toggleSameAsID() {
+  sameAsID = !sameAsID;
+  var toggle = document.getElementById('sid-toggle');
+  var knob = document.getElementById('sid-knob');
+  var altWrap = document.getElementById('alt-country-wrap');
+  var footer = document.getElementById('country-card-footer');
+  if (sameAsID) {
+    toggle.style.background = 'var(--brand-blue)';
+    knob.style.left = '21px';
+    altWrap.style.display = 'none';
+    if (footer) { footer.style.borderRadius = '0 0 var(--radius-lg) var(--radius-lg)'; footer.style.height = '0'; }
+    // Clear selections
+    var rc = document.getElementById('rv-country');
+    var rp = document.getElementById('rv-pstate');
+    var rpw = document.getElementById('rv-parent-state-wrap');
+    if (rc) rc.value = '';
+    if (rp) rp.value = '';
+    if (rpw) rpw.style.display = 'none';
+  } else {
+    toggle.style.background = 'var(--border-strong)';
+    knob.style.left = '3px';
+    altWrap.style.display = 'block';
+    if (footer) footer.style.height = '0';
+  }
+  updateReviewBtn();
+}
+
 // LIVES WITH ME TOGGLE
 var livesWithMe = true;
 function toggleLivesWithMe() {
@@ -1732,8 +1795,12 @@ function toggleLivesWithMe() {
 
 // REVIEW BUTTON GATE
 function updateReviewBtn() {
-  var pc = document.getElementById('rv-country').value;
-  var pcOk = eSafetyCountries[pc] ? document.getElementById('rv-pstate').value !== '' : true;
+  var parentCountryOk = true;
+  if (!sameAsID) {
+    var pc = document.getElementById('rv-country').value;
+    var pcOk = eSafetyCountries[pc] ? document.getElementById('rv-pstate').value !== '' : true;
+    parentCountryOk = pc !== '' && pcOk;
+  }
   var conf = document.getElementById('rv-confirm').checked;
   var childLocationOk = true;
   if (!livesWithMe) {
@@ -1741,7 +1808,7 @@ function updateReviewBtn() {
     var ccOk = eSafetyCountries[cc] ? document.getElementById('rv-child-state').value !== '' : true;
     childLocationOk = cc !== '' && ccOk;
   }
-  document.getElementById('review-btn').disabled = !(pc && pcOk && childLocationOk && conf);
+  document.getElementById('review-btn').disabled = !(parentCountryOk && childLocationOk && conf);
 }
 function revealID(e) {
   e.preventDefault();
