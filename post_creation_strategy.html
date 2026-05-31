@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INRCLIQ — Post Creation UX Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,300&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0C0C10;--muted:#5C5C6E;--hint:#9898A8;
+  --bg:#FAFAF8;--surface:#fff;--border:#EAEAE4;
+  --accent:#1A1A2E;--gold:#C9A84C;--gold-lt:#FBF6EC;
+  --blue:#1D4ED8;--blue-lt:#EFF6FF;--blue-bd:#BFDBFE;
+  --green:#047857;--green-lt:#ECFDF5;--green-bd:#6EE7B7;
+  --amber:#B45309;--amber-lt:#FFFBEB;--amber-bd:#FCD34D;
+  --red:#B91C1C;--red-lt:#FEF2F2;--red-bd:#FCA5A5;
+  --purple:#6D28D9;--purple-lt:#F5F3FF;--purple-bd:#C4B5FD;
+  --teal:#0F766E;--teal-lt:#F0FDFA;--teal-bd:#5EEAD4;
+  --r:10px;--r-lg:16px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.7;-webkit-font-smoothing:antialiased}
+.page{max-width:960px;margin:0 auto;padding:64px 40px 120px}
+/* COVER */
+.cover{padding:80px 0 64px;border-bottom:2px solid var(--border);margin-bottom:72px;position:relative}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+.cover-title{font-family:'Fraunces',serif;font-size:clamp(40px,6vw,68px);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin-bottom:18px}
+.cover-title em{font-style:italic;color:var(--gold)}
+.cover-body{font-size:17px;color:var(--muted);max-width:580px;line-height:1.75;margin-bottom:32px}
+.cover-bar{position:absolute;bottom:0;left:0;width:120px;height:3px;background:var(--gold)}
+/* SECTIONS */
+.section{margin-bottom:80px}
+.sec-num{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--hint);margin-bottom:6px;font-weight:600}
+.sec-title{font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1.15;margin-bottom:14px;letter-spacing:-.01em}
+.sec-body{color:var(--muted);line-height:1.75;margin-bottom:24px;max-width:700px}
+.sec-body p{margin-bottom:12px}.sec-body p:last-child{margin-bottom:0}
+hr.rule{border:none;border-top:1px solid var(--border);margin:72px 0}
+/* INSIGHT */
+.insight{background:var(--accent);color:#fff;border-radius:var(--r-lg);padding:28px 32px;margin-bottom:28px;position:relative;overflow:hidden}
+.insight::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(201,168,76,.08)}
+.insight-lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px}
+.insight p{font-size:15px;color:rgba(255,255,255,.85);line-height:1.7}
+.insight p strong{color:#fff;font-weight:500}
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.c-card{border-radius:var(--r-lg);padding:24px;border:1px solid}
+.c-card.old{background:var(--red-lt);border-color:var(--red-bd)}
+.c-card.new{background:var(--green-lt);border-color:var(--green-bd)}
+.c-lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+.c-card.old .c-lbl{color:var(--red)}.c-card.new .c-lbl{color:var(--green)}
+.c-list{list-style:none;font-size:13px;color:var(--muted)}
+.c-list li{padding:5px 0 5px 16px;position:relative;border-bottom:1px solid rgba(0,0,0,.05)}
+.c-list li:last-child{border-bottom:none}
+.c-list li::before{content:'';position:absolute;left:0;top:14px;width:7px;height:7px;border-radius:50%}
+.c-card.old .c-list li::before{background:var(--red)}.c-card.new .c-list li::before{background:var(--green)}
+/* FULL-WIDTH TABLE */
+.fw-table{width:100%;border-collapse:collapse;margin-bottom:28px;font-size:13px}
+.fw-table th{background:var(--accent);color:rgba(255,255,255,.7);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:12px 16px;text-align:left}
+.fw-table th:first-child{border-radius:var(--r) 0 0 0}.fw-table th:last-child{border-radius:0 var(--r) 0 0}
+.fw-table td{padding:13px 16px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top}
+.fw-table tr:last-child td{border-bottom:none}
+.fw-table tr:nth-child(even) td{background:#FAFAF8}
+.fw-table td.name{font-weight:600;color:var(--ink)}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px}
+.tag.take{background:var(--green-lt);color:var(--green)}
+.tag.adapt{background:var(--amber-lt);color:var(--amber)}
+.tag.skip{background:var(--red-lt);color:var(--red)}
+/* BIZ CARDS */
+.biz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:16px;border-top-width:3px;position:relative}
+.biz-card.reel{border-top-color:var(--blue)}.biz-card.post{border-top-color:var(--green)}
+.biz-card.video{border-top-color:var(--purple)}.biz-card.audio{border-top-color:var(--amber)}
+.biz-card.poll{border-top-color:var(--teal)}.biz-card.merch{border-top-color:var(--gold)}
+.biz-format{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.biz-card.reel .biz-format{color:var(--blue)}.biz-card.post .biz-format{color:var(--green)}
+.biz-card.video .biz-format{color:var(--purple)}.biz-card.audio .biz-format{color:var(--amber)}
+.biz-card.poll .biz-format{color:var(--teal)}.biz-card.merch .biz-format{color:var(--amber)}
+.biz-fn{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin-bottom:10px;line-height:1.2}
+.biz-body{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.biz-tags{display:flex;gap:6px;flex-wrap:wrap}
+.biz-tag{font-size:10px;padding:3px 10px;border-radius:10px;font-weight:500;background:var(--bg);border:1px solid var(--border);color:var(--muted)}
+/* FORMAT ENTRY CARDS */
+.format-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.fmt-card{background:var(--blue-lt);border:1px solid var(--blue-bd);border-radius:var(--r);padding:18px 14px;text-align:center;position:relative}
+.fmt-card.later{background:var(--bg);border-color:var(--border)}
+.fmt-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:var(--blue-lt);color:var(--blue)}
+.fmt-card.later .fmt-badge{background:var(--bg);color:var(--hint);border:1px solid var(--border)}
+.fmt-icon{font-size:28px;margin-bottom:10px;display:block;line-height:1}
+.fmt-name{font-size:13px;font-weight:600;margin-bottom:4px;color:var(--ink)}
+.fmt-desc{font-size:11px;color:var(--muted);line-height:1.4}
+/* TINTED BOX */
+.tinted{border-radius:var(--r);padding:16px 20px;margin-bottom:16px}
+.tinted .tint-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.tinted p{font-size:13px;color:var(--muted);line-height:1.6}
+.tinted.teal{background:var(--teal-lt);border:1px solid var(--teal-bd)}.tinted.teal .tint-lbl{color:var(--teal)}
+.tinted.gold{background:var(--gold-lt);border:1px solid var(--amber-bd)}.tinted.gold .tint-lbl{color:var(--amber)}
+/* SKETCH */
+.sketch{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-bottom:24px}
+.sketch-bar{background:var(--accent);color:rgba(255,255,255,.6);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px}
+.sketch-body{padding:24px;background:#F8F8F6;display:flex;gap:24px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+/* TIERS */
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.tier{border-radius:var(--r);padding:16px 14px;border:1px solid var(--border);background:var(--surface)}
+.tier.t1{border-color:var(--blue-bd);background:var(--blue-lt)}.tier.t2{border-color:var(--purple-bd);background:var(--purple-lt)}.tier.ppv{border-color:var(--amber-bd);background:var(--gold-lt)}
+.tier-name{font-size:12px;font-weight:600;margin-bottom:8px;color:var(--ink)}
+.tier.t1 .tier-name{color:var(--blue)}.tier.t2 .tier-name{color:var(--purple)}.tier.ppv .tier-name{color:var(--amber)}
+.tier-list{list-style:none;font-size:11px;color:var(--muted)}
+.tier-list li{padding:3px 0 3px 12px;position:relative}
+.tier-list li::before{content:'·';position:absolute;left:0;color:var(--hint)}
+/* 5-3-1 */
+.rule531{display:grid;grid-template-columns:5fr 3fr 1fr;margin-bottom:24px;border-radius:var(--r);overflow:hidden;gap:2px}
+.r531{padding:20px;display:flex;flex-direction:column;gap:6px}
+.r531.five{background:#1D4ED8;color:#fff}.r531.three{background:#0F766E;color:#fff}.r531.one{background:#B45309;color:#fff}
+.r531-lbl{font-size:13px;font-weight:500}.r531-desc{font-size:12px;line-height:1.5;opacity:.8}
+.r531-num{font-family:'Fraunces',serif;font-size:48px;font-weight:700;line-height:1;opacity:.15;align-self:flex-end;margin-top:auto}
+/* FEAT CARDS */
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.feat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.feat.ai{background:var(--purple-lt);border-color:var(--purple-bd)}
+.feat-num{font-family:'Fraunces',serif;font-size:28px;font-weight:300;color:var(--border);line-height:1;margin-bottom:8px}
+.feat-title{font-size:14px;font-weight:600;margin-bottom:6px}
+.feat-body{font-size:12px;color:var(--muted);line-height:1.6}
+.feat.ai .feat-title{color:var(--purple)}
+/* CHECKLIST */
+.checklist{display:grid;gap:8px;margin-bottom:28px}
+.chk{display:flex;gap:14px;align-items:flex-start;padding:13px 16px;border-radius:var(--r);border:1px solid}
+.chk.keep{background:var(--green-lt);border-color:var(--green-bd)}
+.chk.change{background:var(--amber-lt);border-color:var(--amber-bd)}
+.chk.remove{background:var(--red-lt);border-color:var(--red-bd)}
+.chk.add{background:var(--blue-lt);border-color:var(--blue-bd)}
+.chk-icon{font-size:16px;flex-shrink:0;margin-top:1px;font-style:normal}
+.chk-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.chk-body{font-size:12px;color:var(--muted);line-height:1.5}
+/* DECISIONS */
+.decisions{display:grid;gap:16px;margin-bottom:28px}
+.dec{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;display:grid;grid-template-columns:56px 1fr;gap:16px;align-items:start}
+.dec-num{font-family:'Fraunces',serif;font-size:48px;font-weight:700;color:var(--border);line-height:1}
+.dec-title{font-size:15px;font-weight:600;margin-bottom:8px}
+.dec-body{font-size:13px;color:var(--muted);line-height:1.65}
+/* CLOSING */
+.closing{background:var(--accent);border-radius:var(--r-lg);padding:40px;margin-top:64px}
+.closing h2{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:#fff;margin-bottom:16px}
+.closing p{font-size:14px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:12px}
+.closing p:last-child{margin-bottom:0}
+/* BULLETS */
+.bullets{list-style:none;margin-bottom:16px}
+.bullets li{padding:5px 0 5px 18px;position:relative;font-size:13px;color:var(--muted);border-bottom:1px solid var(--border)}
+.bullets li:last-child{border-bottom:none}
+.bullets li::before{content:'—';position:absolute;left:0;color:var(--hint)}
+.h3{font-size:16px;font-weight:600;margin:20px 0 10px;color:var(--ink)}
+@media(max-width:640px){
+  .compare,.feat-grid,.format-grid,.tiers{grid-template-columns:1fr 1fr}
+  .rule531{grid-template-columns:1fr}.compare{grid-template-columns:1fr}
+  .dec{grid-template-columns:1fr}
+}
+</style></head><body><div class="page">
+
+<div class="cover">
+  <div class="eyebrow">INRCLIQ Platform &nbsp;·&nbsp; Post Creation &nbsp;·&nbsp; UX Strategy</div>
+  <h1 class="cover-title">Designing a<br><em>creator-first</em><br>publishing experience</h1>
+  <p class="cover-body">A strategic UX brief covering the architecture, content type positioning, subscription model, merch commerce, AI features, and design direction for the INRCLIQ post creation experience. Based on competitor analysis, the platform's open creator shift, and the Instagram Reels engagement model.</p>
+  <div class="cover-bar"></div>
+</div>
+
+<div class="section">
+  <div class="sec-num">01</div>
+  <h2 class="sec-title">The strategic shift</h2>
+  <div class="sec-body">
+    <p>The original INRCLIQ model divided users into fans and creators at onboarding. Posting was a paid privilege — only upgraded creators could publish. The new direction opens posting to everyone, like Instagram, while preserving subscription monetisation and merch commerce as the primary revenue layers.</p>
+    <p>This is the right call for growth. But it means the entire post creation architecture needs to be rebuilt. The current Figma screens were designed for the old model and cannot be adapted. This brief defines what replaces them.</p>
+  </div>
+  <div class="compare">
+    <div class="c-card old">
+      <div class="c-lbl">← Previous model</div>
+      <ul class="c-list">
+        <li>Fan or creator chosen at onboarding</li>
+        <li>Only paid creators can post</li>
+        <li>Three separate composer screens by type</li>
+        <li>Post creation from creator dashboard only</li>
+        <li>Video requires URL or Vimeo connection</li>
+        <li>Audience control buried in step 2</li>
+        <li>No AI features in the composer</li>
+        <li>No Reels format or discovery feed</li>
+        <li>No draft autosave</li>
+        <li>No merch commerce capability</li>
+      </ul>
+    </div>
+    <div class="c-card new">
+      <div class="c-lbl">→ New direction</div>
+      <ul class="c-list">
+        <li>Anyone can post — open creator model</li>
+        <li>One unified adaptive composer</li>
+        <li>+ button in main nav for all users</li>
+        <li>Format determined by content not upfront choice</li>
+        <li>Direct video upload as primary option</li>
+        <li>Audience and monetisation inline in step 1</li>
+        <li>AI writing tools built into the composer</li>
+        <li>Reels as a first-class discovery format</li>
+        <li>Full draft autosave throughout</li>
+        <li>Native merch shelf linked from posts</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">02</div>
+  <h2 class="sec-title">The Instagram Reels lesson</h2>
+  <div class="sec-body">
+    <p>Instagram's pivot is the most relevant strategic precedent. Instagram had photos and long-form video. Engagement was declining. TikTok was capturing the audience. Their response was to reposition every video format toward Reels — short, discoverable, algorithm-amplified content. Engagement reversed. Growth returned.</p>
+    <p>The principle is not about format preference. Short-form vertical video is the most powerful organic discovery mechanism on any social platform right now. INRCLIQ should apply this logic not just to Reels but to every content format — each needs a clearly defined business function, not just a media type.</p>
+  </div>
+  <div class="insight">
+    <div class="insight-lbl">Strategic principle</div>
+    <p>Instagram's shift worked because they gave each format a <strong>job</strong>. Reels drive discovery. Posts deliver value. Stories build daily intimacy. INRCLIQ needs the same architecture — six formats, six distinct jobs, one coherent creator growth system.</p>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">03</div>
+  <h2 class="sec-title">Six content types — six business functions</h2>
+  <div class="sec-body">
+    <p>Excluding Story and Live which are out of scope for MVP, INRCLIQ has six content types to position: Reel, Post, Video, Audio, Poll, and Merch. Each should be designed and communicated as a distinct business instrument — not just a format option in a dropdown.</p>
+  </div>
+
+  <div class="biz-card reel">
+    <div class="biz-format">Reel</div>
+    <div class="biz-fn">The Growth Engine</div>
+    <div class="biz-body">Always public. Always discoverable. Algorithm-amplified to non-followers. A creator who posts a Reel is playing for new audience — not existing fans. The Reel itself generates zero direct revenue but it is the top of the entire monetisation funnel. Without it the platform cannot grow organically. Every subscription begins with a discovery moment — and Reels are that moment.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: everyone</span><span class="biz-tag">Revenue: indirect</span><span class="biz-tag">Function: acquisition</span></div>
+  </div>
+
+  <div class="biz-card post">
+    <div class="biz-format">Post (Image / Text / Carousel)</div>
+    <div class="biz-fn">The Value Delivery Engine</div>
+    <div class="biz-body">This is what subscribers pay to access. A creator's posts are the product. Free posts build the relationship and trust. Tier 1 and Tier 2 posts are the subscription value. PPV posts are the premium offering. The post format is where the 5-3-1 content strategy plays out — and where the platform's subscription revenue is generated post by post.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: tiered</span><span class="biz-tag">Revenue: direct</span><span class="biz-tag">Function: retention</span></div>
+  </div>
+
+  <div class="biz-card video">
+    <div class="biz-format">Video (Long-form)</div>
+    <div class="biz-fn">The Loyalty and Upsell Engine</div>
+    <div class="biz-body">Long-form video builds deep loyalty with existing fans. A 20-minute behind-the-scenes or a full tutorial is not for new audiences — it is for people who already care enough to invest time. A creator who posts long-form video as Tier 2 exclusive gives fans a compelling reason to upgrade from Tier 1. This is the Patreon model applied to video — and the upsell mechanism that increases average subscription revenue per creator.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: subscribers</span><span class="biz-tag">Revenue: direct</span><span class="biz-tag">Function: upsell</span></div>
+  </div>
+
+  <div class="biz-card audio">
+    <div class="biz-format">Audio</div>
+    <div class="biz-fn">The Differentiation Engine</div>
+    <div class="biz-body">No competitor in the research scores well for audio as a first-class content format. Music creators, podcasters, spoken word artists, and DJs are completely underserved everywhere. If INRCLIQ builds audio as a proper post type — with waveform visualisation, timestamp comments, and subscription gating — it occupies a space no other platform owns. This drives a creator cohort that no competitor is actively pursuing.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: tiered</span><span class="biz-tag">Revenue: direct</span><span class="biz-tag">Function: differentiation</span></div>
+  </div>
+
+  <div class="biz-card poll">
+    <div class="biz-format">Poll</div>
+    <div class="biz-fn">The Engagement Amplifier</div>
+    <div class="biz-body">Polls are the highest-engagement-per-impression format on every platform that supports them. They require minimal creative effort but generate strong algorithm signals and direct fan input. "Vote on my next song." "Which city should I tour next?" A poll post boosts the algorithmic performance of the creator's other content — including their subscription-gated posts.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: all followers</span><span class="biz-tag">Revenue: indirect</span><span class="biz-tag">Function: amplification</span></div>
+  </div>
+
+  <div class="biz-card merch">
+    <div class="biz-format">Merch — Product Commerce</div>
+    <div class="biz-fn">The Direct Revenue Engine</div>
+    <div class="biz-body">Creators on INRCLIQ should be able to sell physical and digital products directly from their profile and from within any post — similar to how YouTube Shopping integrates with creator content. A creator taps a product link icon in the composer, selects from their product shelf, and the post displays a shoppable card. Fans tap to view, add to cart, and checkout without leaving INRCLIQ. This removes reliance on Linktree, Shopify landing pages, and external links — keeping the entire creator-fan-purchase journey on-platform.</div>
+    <div class="biz-tags"><span class="biz-tag">Audience: all users</span><span class="biz-tag">Revenue: direct transaction fee</span><span class="biz-tag">Function: commerce</span></div>
+  </div>
+
+  <h3 class="h3">Positioning summary</h3>
+  <table class="fw-table">
+    <thead>
+      <tr>
+        <th style="width:90px">Format</th>
+        <th>Primary function</th>
+        <th>Who sees it</th>
+        <th>Revenue role</th>
+        <th style="width:50px">MVP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="name">Reel</td><td>Acquisition — drives new subscribers</td><td>Everyone, discoverable</td><td>Indirect — top of funnel</td><td>✓</td></tr>
+      <tr><td class="name">Post</td><td>Value delivery — subscription content</td><td>Tiered: Free / T1 / T2 / PPV</td><td>Direct — subscription</td><td>✓</td></tr>
+      <tr><td class="name">Long Video</td><td>Loyalty and tier upsell</td><td>Subscribers, tier-gated</td><td>Direct — upsell</td><td>✓</td></tr>
+      <tr><td class="name">Audio</td><td>Differentiation — underserved niche</td><td>Tiered audience</td><td>Direct — niche acquisition</td><td>✓</td></tr>
+      <tr><td class="name">Poll</td><td>Engagement amplification</td><td>All followers</td><td>Indirect — algorithm boost</td><td>✓</td></tr>
+      <tr><td class="name">Merch</td><td>Commerce — product sales</td><td>All users on creator page</td><td>Direct — transaction fee</td><td>✓</td></tr>
+    </tbody>
+  </table>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">04</div>
+  <h2 class="sec-title">What the research tells us</h2>
+  <div class="sec-body"><p>Ten platforms were analysed. The table below summarises the most actionable findings — what to take directly, what to adapt, and what to leave behind.</p></div>
+  <table class="fw-table">
+    <thead>
+      <tr>
+        <th style="width:100px">Platform</th>
+        <th style="width:200px">Key strength</th>
+        <th>INRCLIQ takeaway</th>
+        <th style="width:70px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="name">Instagram</td><td>Unified composer, Reels, draft support, mobile-first UX</td><td>One adaptive composer. Format determined by media attached. No upfront type choice required from the creator.</td><td><span class="tag take">TAKE</span></td></tr>
+      <tr><td class="name">TikTok</td><td>Reel creation, audio integration, AI disclosure, mobile-first</td><td>Short-form video with in-app editing, trim, and audio overlay. Creator tools centralised in one flow.</td><td><span class="tag take">TAKE</span></td></tr>
+      <tr><td class="name">Patreon</td><td>Subscription visibility, tier-based publishing, locked content</td><td>Creator chooses audience tier per post. Free, Tier 1, Tier 2, PPV selector inline in the composer — not a separate step.</td><td><span class="tag take">TAKE</span></td></tr>
+      <tr><td class="name">OnlyFans</td><td>PPV architecture, locked content, subscriber-only visibility</td><td>Any post priced individually. Fan pays once to unlock a specific post without subscribing. Adapt without the adult content association.</td><td><span class="tag adapt">ADAPT</span></td></tr>
+      <tr><td class="name">YouTube</td><td>Upload lifecycle, scheduling, metadata, draft handling, creator analytics</td><td>Processing states visible throughout upload. Schedule with date and time picker. Draft management as a first-class feature.</td><td><span class="tag take">TAKE</span></td></tr>
+      <tr><td class="name">LinkedIn</td><td>AI-assisted writing, structured content organisation</td><td>Inline AI assist button: improve writing, shorten, fix grammar, translate. Proven and familiar interaction pattern for the composer.</td><td><span class="tag adapt">ADAPT</span></td></tr>
+      <tr><td class="name">Threads / X</td><td>Minimal composer, fast posting, poll support, reply controls</td><td>Poll format native to the composer — not a separate entry point. Minimal friction from open composer to publish.</td><td><span class="tag take">TAKE</span></td></tr>
+      <tr><td class="name">Facebook</td><td>Multi-format publishing but overloaded UI, high cognitive load</td><td>Too many options visible simultaneously. Causes decision fatigue before creation even starts. Progressive disclosure instead.</td><td><span class="tag skip">SKIP</span></td></tr>
+    </tbody>
+  </table>
+  <div class="insight">
+    <div class="insight-lbl">Strategic insight</div>
+    <p>The highest-performing platforms share one principle: <strong>a lightweight default composer that expands progressively.</strong> The creator sees a blank canvas first. Complexity — tiers, scheduling, monetisation, AI — appears when they need it, not before. INRCLIQ should feel as fast as Threads to open and as powerful as Patreon to publish.</p>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">05</div>
+  <h2 class="sec-title">Entry point — one + button, five formats</h2>
+  <div class="sec-body"><p>A single + button in the main navigation — accessible to all logged-in users on both web and mobile — opens a format selection panel. Each format has a genuinely different creation experience. The entry point unifies them without collapsing their differences.</p></div>
+
+  <div class="format-grid">
+    <div class="fmt-card">
+      <span class="fmt-badge">MVP</span>
+      <span class="fmt-icon">📝</span>
+      <div class="fmt-name">Post</div>
+      <div class="fmt-desc">Unified adaptive composer. Text, image, carousel, poll, or combination. Lives on profile.</div>
+    </div>
+    <div class="fmt-card">
+      <span class="fmt-badge">MVP</span>
+      <span class="fmt-icon">🎬</span>
+      <div class="fmt-name">Reel</div>
+      <div class="fmt-desc">Short vertical video 15s–3min. Always public. The discovery and acquisition engine.</div>
+    </div>
+    <div class="fmt-card">
+      <span class="fmt-badge">MVP</span>
+      <span class="fmt-icon">▶️</span>
+      <div class="fmt-name">Video</div>
+      <div class="fmt-desc">Long-form video. Subscriber-gated. Builds loyalty and drives tier upgrades.</div>
+    </div>
+    <div class="fmt-card">
+      <span class="fmt-badge">MVP</span>
+      <span class="fmt-icon">🎵</span>
+      <div class="fmt-name">Audio</div>
+      <div class="fmt-desc">Music, podcast, spoken word. First-class format. No competitor owns this space.</div>
+    </div>
+  </div>
+
+  <div class="tinted teal">
+    <div class="tint-lbl">Poll — inline composer format, not a separate entry point</div>
+    <p>Polls do not need their own entry point in the format sheet. A poll option sits inside the Post composer as a content type selector — the creator taps Poll and the text fields adapt to a question and answer format. Fast to create, high engagement, zero friction.</p>
+  </div>
+
+  <div class="tinted gold">
+    <div class="tint-lbl">Merch — inline product link from the composer toolbar</div>
+    <p>A product link icon in the composer toolbar opens the creator's product shelf for selection. The linked product card appears below the post content on publish. One tap to attach, zero additional screens. Works across all post types.</p>
+  </div>
+
+  <div class="sketch">
+    <div class="sketch-bar">Wireframe skeleton — + button entry point (mobile + web)</div>
+    <div class="sketch-body">
+      <div style="flex:0 0 auto">
+        <svg width="200" height="440" viewBox="0 0 200 440" role="img" aria-label="Mobile format sheet skeleton">
+          <rect x="0" y="0" width="200" height="440" rx="16" fill="#1C1C1E"/>
+          <rect x="6" y="6" width="188" height="428" rx="12" fill="#F8F8F6"/>
+          <!-- feed skeleton -->
+          <rect x="14" y="14" width="172" height="10" rx="3" fill="#E8E8E4"/>
+          <rect x="14" y="32" width="130" height="10" rx="3" fill="#E8E8E4"/>
+          <rect x="14" y="50" width="172" height="80" rx="6" fill="#E8E8E4"/>
+          <rect x="14" y="140" width="100" height="8" rx="3" fill="#E8E8E4"/>
+          <rect x="14" y="156" width="172" height="60" rx="6" fill="#E8E8E4"/>
+          <!-- overlay -->
+          <rect x="0" y="230" width="200" height="210" fill="rgba(0,0,0,0.4)"/>
+          <!-- sheet -->
+          <rect x="0" y="265" width="200" height="175" rx="16" fill="white"/>
+          <rect x="88" y="273" width="24" height="3" rx="2" fill="#E8E8E4"/>
+          <text x="100" y="296" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">CREATE</text>
+          <!-- Post -->
+          <rect x="12" y="304" width="82" height="56" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.5"/>
+          <text x="53" y="326" text-anchor="middle" font-family="serif" font-size="20">📝</text>
+          <text x="53" y="348" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="#0C0C10">Post</text>
+          <!-- Reel -->
+          <rect x="106" y="304" width="82" height="56" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.5"/>
+          <text x="147" y="326" text-anchor="middle" font-family="serif" font-size="20">🎬</text>
+          <text x="147" y="348" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="#0C0C10">Reel</text>
+          <!-- Video -->
+          <rect x="12" y="368" width="82" height="56" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.5"/>
+          <text x="53" y="390" text-anchor="middle" font-family="serif" font-size="20">▶️</text>
+          <text x="53" y="412" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="#0C0C10">Video</text>
+          <!-- Audio -->
+          <rect x="106" y="368" width="82" height="56" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.5"/>
+          <text x="147" y="390" text-anchor="middle" font-family="serif" font-size="20">🎵</text>
+          <text x="147" y="412" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="#0C0C10">Audio</text>
+          <!-- nav -->
+          <rect x="0" y="408" width="200" height="36" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="30" y="430" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Home</text>
+          <text x="68" y="430" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Explore</text>
+          <circle cx="100" cy="426" r="13" fill="#1C1C1E"/>
+          <text x="100" y="432" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="16" fill="white" font-weight="300">+</text>
+          <text x="134" y="430" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Inbox</text>
+          <text x="170" y="430" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Profile</text>
+        </svg>
+        <div style="font-size:11px;color:#9898A8;text-align:center;margin-top:8px">Mobile — bottom sheet</div>
+      </div>
+      <div style="flex:1;min-width:280px">
+        <svg width="100%" viewBox="0 0 440 360" role="img" aria-label="Web nav dropdown skeleton">
+          <rect width="440" height="360" rx="10" fill="#F0F0EC" stroke="#E8E8E4" stroke-width="0.5"/>
+          <!-- nav -->
+          <rect width="440" height="44" rx="10" fill="#1C1C1E"/>
+          <text x="20" y="27" font-family="Georgia,serif" font-size="13" fill="white" font-weight="700">INRCLIQ</text>
+          <rect x="150" y="12" width="140" height="20" rx="10" fill="rgba(255,255,255,.08)"/>
+          <text x="220" y="26" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="rgba(255,255,255,0.4)">Search creators...</text>
+          <!-- + button highlighted gold -->
+          <rect x="354" y="11" width="72" height="22" rx="11" fill="#C9A84C"/>
+          <text x="390" y="26" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="white" font-weight="600">+ Create</text>
+          <!-- dropdown -->
+          <rect x="282" y="48" width="155" height="220" rx="10" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="298" y="68" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">CREATE</text>
+          <!-- Post row -->
+          <rect x="290" y="74" width="139" height="36" rx="6" fill="#EFF6FF"/>
+          <text x="302" y="97" font-family="serif" font-size="14">📝</text>
+          <text x="322" y="88" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0C0C10">Post</text>
+          <text x="322" y="102" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">image · text · carousel · poll</text>
+          <!-- Reel row -->
+          <rect x="290" y="118" width="139" height="36" rx="6" fill="#EFF6FF"/>
+          <text x="302" y="141" font-family="serif" font-size="14">🎬</text>
+          <text x="322" y="132" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0C0C10">Reel</text>
+          <text x="322" y="146" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">short-form vertical video</text>
+          <!-- Video row -->
+          <rect x="290" y="162" width="139" height="36" rx="6" fill="#EFF6FF"/>
+          <text x="302" y="185" font-family="serif" font-size="14">▶️</text>
+          <text x="322" y="176" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0C0C10">Video</text>
+          <text x="322" y="190" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">long-form · subscriber gated</text>
+          <!-- Audio row -->
+          <rect x="290" y="206" width="139" height="36" rx="6" fill="#EFF6FF"/>
+          <text x="302" y="229" font-family="serif" font-size="14">🎵</text>
+          <text x="322" y="220" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0C0C10">Audio</text>
+          <text x="322" y="234" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">music · podcast · spoken word</text>
+          <!-- sidebar skeleton -->
+          <rect x="0" y="44" width="200" height="316" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <rect x="12" y="56" width="80" height="8" rx="3" fill="#E8E8E4"/>
+          <rect x="12" y="72" width="176" height="60" rx="6" fill="#E8E8E4"/>
+          <rect x="12" y="140" width="176" height="60" rx="6" fill="#E8E8E4"/>
+          <rect x="12" y="208" width="176" height="60" rx="6" fill="#E8E8E4"/>
+          <rect x="200" y="44" width="82" height="316" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+        </svg>
+        <div style="font-size:11px;color:#9898A8;text-align:center;margin-top:8px">Web — dropdown panel from + button</div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">06</div>
+  <h2 class="sec-title">Merch and product commerce</h2>
+  <div class="sec-body">
+    <p>INRCLIQ should allow creators to sell physical and digital products directly from the platform — linked from posts, from their profile, and from a dedicated product shelf. This is the YouTube Shopping model applied to a creator-fan platform.</p>
+  </div>
+  <h3 class="h3">How it works in the composer</h3>
+  <ul class="bullets">
+    <li>Creator taps the product icon in the composer toolbar.</li>
+    <li>Their product shelf opens as a bottom sheet or sidebar panel — showing product images, names, and prices.</li>
+    <li>They select one or more products to link to the post.</li>
+    <li>A shoppable card appears below the post content on publish — product image, name, and price with an Add to cart button.</li>
+    <li>Fans tap the card to view the product detail page, add to cart, and checkout — all within INRCLIQ.</li>
+  </ul>
+  <h3 class="h3">Product shelf on the creator profile</h3>
+  <ul class="bullets">
+    <li>A dedicated Shop tab on the creator profile — visible to all visitors alongside All, Posts, Videos, and Audio.</li>
+    <li>Creator can showcase physical products (merch), digital downloads (presets, samples, PDFs), and limited editions.</li>
+    <li>Fans can browse and purchase without navigating away from the profile.</li>
+  </ul>
+  <h3 class="h3">Cart and checkout</h3>
+  <ul class="bullets">
+    <li>Shopping cart persists across the session — fan can add products from multiple creators.</li>
+    <li>Checkout supports card, Apple Pay, Google Pay.</li>
+    <li>Order confirmation and shipping updates delivered in-app and by email.</li>
+    <li>Creator receives payout via their connected payment account minus the platform transaction fee.</li>
+  </ul>
+  <div class="insight">
+    <div class="insight-lbl">Why this matters</div>
+    <p>Creators currently leave INRCLIQ to sell — they paste Shopify links, Linktree URLs, or Bandcamp pages in their bio. Every time a fan clicks away to buy, INRCLIQ loses the transaction, the data, and the retention signal. <strong>A native commerce layer keeps the entire creator-fan-purchase journey on-platform.</strong> That is the revenue model that sustains creator retention long term.</p>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">07</div>
+  <h2 class="sec-title">The unified adaptive composer</h2>
+  <div class="sec-body">
+    <p>One composer replaces three type-specific screens. The creator opens it and starts writing or attaches media. The format adapts to the content. No upfront format decision needed. The audience tier selector, monetisation toggle, and merch product link sit at the top and in the toolbar from the start.</p>
+  </div>
+  <div class="sketch">
+    <div class="sketch-bar">Wireframe skeleton — unified composer (mobile + web two-column)</div>
+    <div class="sketch-body">
+      <div style="flex:0 0 auto">
+        <svg width="210" height="520" viewBox="0 0 210 520" role="img" aria-label="Mobile composer skeleton">
+          <rect width="210" height="520" rx="14" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <!-- header -->
+          <rect width="210" height="44" rx="14" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="16" y="26" font-family="DM Sans,sans-serif" font-size="11" fill="#9898A8">← Cancel</text>
+          <text x="105" y="26" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" font-weight="600" fill="#0C0C10">New post</text>
+          <rect x="152" y="13" width="46" height="19" rx="10" fill="#1C1C1E"/>
+          <text x="175" y="26" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="white">Publish</text>
+          <!-- audience -->
+          <text x="16" y="62" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">AUDIENCE</text>
+          <rect x="16" y="68" width="66" height="22" rx="11" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+          <text x="49" y="83" text-anchor="middle" font-family="serif" font-size="10">🌍</text>
+          <text x="66" y="83" font-family="DM Sans,sans-serif" font-size="10" fill="#1D4ED8"> Public ▾</text>
+          <rect x="88" y="68" width="52" height="22" rx="11" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="114" y="83" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Tier 1 ▾</text>
+          <rect x="146" y="68" width="48" height="22" rx="11" fill="#FBF6EC" stroke="#E8C87A" stroke-width="0.5"/>
+          <text x="170" y="83" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#B45309">PPV ▾</text>
+          <!-- text area -->
+          <rect x="16" y="98" width="178" height="100" rx="8" fill="#F8F8F6"/>
+          <text x="28" y="122" font-family="DM Sans,sans-serif" font-size="12" fill="#C8C8C4">Write something...</text>
+          <text x="178" y="192" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">0/2000</text>
+          <!-- AI -->
+          <rect x="16" y="206" width="74" height="22" rx="11" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+          <text x="53" y="221" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#6D28D9">✦ AI assist</text>
+          <!-- content type -->
+          <rect x="16" y="234" width="178" height="1" fill="#E8E8E4"/>
+          <text x="16" y="252" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">CONTENT TYPE (5-3-1)</text>
+          <rect x="16" y="258" width="50" height="20" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+          <text x="41" y="272" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#1D4ED8">Value</text>
+          <rect x="72" y="258" width="64" height="20" rx="10" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="104" y="272" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Community</text>
+          <rect x="142" y="258" width="52" height="20" rx="10" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="168" y="272" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Promo</text>
+          <!-- media -->
+          <rect x="16" y="286" width="178" height="1" fill="#E8E8E4"/>
+          <text x="16" y="304" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">MEDIA</text>
+          <rect x="16" y="310" width="50" height="50" rx="8" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="41" y="340" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="22" fill="#C8C8C4">+</text>
+          <!-- toolbar icons -->
+          <rect x="16" y="370" width="178" height="1" fill="#E8E8E4"/>
+          <text x="30"  y="390" text-anchor="middle" font-family="serif" font-size="16">🏷️</text>
+          <text x="62"  y="390" text-anchor="middle" font-family="serif" font-size="16">📎</text>
+          <text x="94"  y="390" text-anchor="middle" font-family="serif" font-size="16">📊</text>
+          <text x="126" y="390" text-anchor="middle" font-family="serif" font-size="16">🛍️</text>
+          <text x="158" y="390" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#9898A8">···</text>
+          <!-- monetise -->
+          <rect x="16" y="402" width="178" height="44" rx="8" fill="#FBF6EC" stroke="#E8C87A" stroke-width="0.5"/>
+          <text x="28" y="422" font-family="serif" font-size="12">💰</text>
+          <text x="44" y="422" font-family="DM Sans,sans-serif" font-size="12" fill="#B45309"> Monetise this post</text>
+          <text x="28" y="438" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Set price or subscriber-only</text>
+          <!-- schedule -->
+          <rect x="16" y="454" width="178" height="34" rx="8" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="28" y="475" font-family="serif" font-size="12">🗓️</text>
+          <text x="44" y="475" font-family="DM Sans,sans-serif" font-size="12" fill="#5C5C6E"> Schedule for later</text>
+          <text x="105" y="508" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#C8C8C4">Auto-saved · just now</text>
+        </svg>
+        <div style="font-size:11px;color:#9898A8;text-align:center;margin-top:8px">Mobile — single column</div>
+      </div>
+      <div style="flex:1;min-width:300px">
+        <svg width="100%" viewBox="0 0 420 500" role="img" aria-label="Web two-column composer skeleton">
+          <rect width="420" height="500" rx="10" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <!-- header -->
+          <rect width="420" height="48" rx="10" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="20" y="28" font-family="Georgia,serif" font-size="14" fill="#0C0C10" font-weight="700">Create a post</text>
+          <rect x="290" y="12" width="62" height="24" rx="6" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="321" y="28" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">Preview</text>
+          <rect x="358" y="12" width="48" height="24" rx="6" fill="#1C1C1E"/>
+          <text x="382" y="28" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="white">Post</text>
+          <!-- left composer -->
+          <line x1="270" y1="48" x2="270" y2="500" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="16" y="68" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">AUDIENCE</text>
+          <rect x="16" y="74" width="64" height="22" rx="11" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+          <text x="34" y="89" font-family="serif" font-size="10">🌍</text>
+          <text x="46" y="89" font-family="DM Sans,sans-serif" font-size="10" fill="#1D4ED8">Public ▾</text>
+          <rect x="86" y="74" width="52" height="22" rx="11" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="112" y="89" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Tier 1 ▾</text>
+          <rect x="144" y="74" width="52" height="22" rx="11" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="170" y="89" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Tier 2 ▾</text>
+          <rect x="202" y="74" width="42" height="22" rx="11" fill="#FBF6EC" stroke="#E8C87A" stroke-width="0.5"/>
+          <text x="223" y="89" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#B45309">PPV ▾</text>
+          <!-- text area -->
+          <rect x="16" y="104" width="238" height="130" rx="8" fill="#F8F8F6"/>
+          <text x="28" y="128" font-family="DM Sans,sans-serif" font-size="13" fill="#C8C8C4">Write something...</text>
+          <!-- AI + content type -->
+          <rect x="16" y="244" width="80" height="22" rx="11" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1"/>
+          <text x="56" y="259" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#6D28D9">✦ AI assist ▾</text>
+          <text x="248" y="259" text-anchor="end" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">0/2000</text>
+          <!-- content type chips -->
+          <text x="16" y="284" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">CONTENT TYPE (5-3-1)</text>
+          <rect x="16" y="290" width="50" height="20" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+          <text x="41" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#1D4ED8">Value</text>
+          <rect x="72" y="290" width="64" height="20" rx="10" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="104" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Community</text>
+          <rect x="142" y="290" width="52" height="20" rx="10" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="168" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Promo</text>
+          <!-- media -->
+          <rect x="16" y="318" width="238" height="80" rx="8" fill="#F8F8F6" stroke="#E8E8E4" stroke-width="0.5" stroke-dasharray="4,2"/>
+          <text x="135" y="352" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9898A8">Drag media here</text>
+          <rect x="95" y="362" width="80" height="24" rx="12" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="135" y="378" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">Browse files</text>
+          <!-- toolbar -->
+          <text x="30"  y="418" text-anchor="middle" font-family="serif" font-size="16">🏷️</text>
+          <text x="58"  y="418" text-anchor="middle" font-family="serif" font-size="16">📊</text>
+          <text x="86"  y="418" text-anchor="middle" font-family="serif" font-size="16">🛍️</text>
+          <text x="114" y="418" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9898A8">···</text>
+          <text x="135" y="470" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">Auto-saved · just now</text>
+          <!-- right panel -->
+          <rect x="270" y="48" width="150" height="452" fill="#F8F8F6"/>
+          <text x="284" y="70" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">PUBLISH</text>
+          <rect x="280" y="78" width="128" height="40" rx="8" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="290" y="96" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">Now</text>
+          <text x="290" y="110" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Schedule for later →</text>
+          <text x="284" y="134" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">MONETISE</text>
+          <rect x="280" y="142" width="128" height="60" rx="8" fill="#FBF6EC" stroke="#E8C87A" stroke-width="0.5"/>
+          <text x="292" y="160" font-family="serif" font-size="12">💰</text>
+          <text x="308" y="160" font-family="DM Sans,sans-serif" font-size="11" fill="#B45309"> Paid content</text>
+          <rect x="290" y="168" width="60" height="20" rx="4" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="320" y="182" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#9898A8">$ Price</text>
+          <text x="284" y="220" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">MERCH</text>
+          <rect x="280" y="228" width="128" height="40" rx="8" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="292" y="246" font-family="serif" font-size="12">🛍️</text>
+          <text x="308" y="246" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E"> Link product</text>
+          <text x="292" y="260" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">Select from shelf →</text>
+          <text x="284" y="285" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">SETTINGS</text>
+          <rect x="280" y="293" width="128" height="26" rx="6" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="290" y="310" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">Content warning</text>
+          <rect x="280" y="327" width="128" height="26" rx="6" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="290" y="344" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">AI disclosure</text>
+          <text x="284" y="373" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8" font-weight="600" letter-spacing="1">COLLECTION</text>
+          <rect x="280" y="381" width="128" height="36" rx="8" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+          <text x="290" y="399" font-family="DM Sans,sans-serif" font-size="11" fill="#5C5C6E">Add to collection</text>
+          <text x="290" y="411" font-family="DM Sans,sans-serif" font-size="9" fill="#9898A8">None selected ▾</text>
+        </svg>
+        <div style="font-size:11px;color:#9898A8;text-align:center;margin-top:8px">Web — composer left, publishing settings right</div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">08</div>
+  <h2 class="sec-title">Profile tabs — aligned to business function</h2>
+  <div class="sec-body">
+    <p>The current proposed tab structure — All, Photos &amp; Reels, Long &amp; Short Videos, Audio — has a categorisation problem. Reels appear in "Photos &amp; Reels" but also belong behaviourally with "Long &amp; Short Videos." This creates content overlap. Grouping by media type misses the opportunity to align the profile with the platform's business narrative.</p>
+  </div>
+  <div class="compare">
+    <div class="c-card old">
+      <div class="c-lbl">← Current proposal — issues</div>
+      <ul class="c-list">
+        <li><strong>Photos &amp; Reels</strong> — forced pairing. Photos are static posts. Reels are short-form discovery video. Different consumption behaviours, different functions.</li>
+        <li><strong>Long &amp; Short Videos</strong> — if Reels are also in the previous tab this creates content overlap. The label reads as a technical description, not user-facing.</li>
+        <li><strong>Audio</strong> — correct direction. First-class tab is a strong differentiator. Keep this.</li>
+        <li><strong>No Shop tab</strong> — creators have no dedicated commerce surface on their profile.</li>
+      </ul>
+    </div>
+    <div class="c-card new">
+      <div class="c-lbl">→ Proposed — function-first tabs</div>
+      <ul class="c-list">
+        <li><strong>All</strong> — everything mixed. Default landing tab.</li>
+        <li><strong>Posts</strong> — images, text posts, carousels, polls. The core subscription catalogue.</li>
+        <li><strong>Videos</strong> — long-form video posts and Reels together. Both are video consumption. Clean single label, no overlap.</li>
+        <li><strong>Audio</strong> — music, podcast, spoken word. First-class tab. The platform's ownable differentiator.</li>
+        <li><strong>Shop</strong> — creator's product shelf. Physical and digital products. Shoppable from the profile.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sketch">
+    <div class="sketch-bar">Wireframe skeleton — creator profile with five-tab structure</div>
+    <div class="sketch-body" style="display:block;padding:24px">
+      <svg width="100%" viewBox="0 0 700 210" role="img" aria-label="Creator profile header with five tabs">
+        <rect width="700" height="100" rx="8" fill="#E8E8E4"/>
+        <circle cx="64" cy="100" r="38" fill="#DBEAFE" stroke="white" stroke-width="3"/>
+        <text x="64" y="107" text-anchor="middle" font-family="Georgia,serif" font-size="20" fill="#1D4ED8" font-weight="700">JF</text>
+        <text x="114" y="118" font-family="Georgia,serif" font-size="19" fill="#0C0C10" font-weight="700">James Franklin</text>
+        <text x="114" y="134" font-family="DM Sans,sans-serif" font-size="12" fill="#9898A8">Inspired by nature · 34.2k followers · 412 posts</text>
+        <rect x="570" y="108" width="110" height="32" rx="16" fill="#1C1C1E"/>
+        <text x="625" y="128" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="white">Subscribe</text>
+        <!-- tab bar -->
+        <rect x="0" y="152" width="700" height="50" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+        <!-- All — active with underline -->
+        <text x="50" y="180" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#0C0C10">All</text>
+        <rect x="26" y="200" width="48" height="2" rx="1" fill="#0C0C10"/>
+        <!-- Posts -->
+        <text x="170" y="180" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#9898A8">Posts</text>
+        <!-- Videos -->
+        <text x="300" y="180" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#9898A8">Videos</text>
+        <!-- Audio with new badge -->
+        <text x="430" y="180" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#9898A8">Audio</text>
+        <rect x="452" y="168" width="32" height="14" rx="7" fill="#FBF6EC" stroke="#E8C87A" stroke-width="0.5"/>
+        <text x="468" y="178" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="#B45309" font-weight="600">New</text>
+        <!-- Shop -->
+        <text x="560" y="180" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#9898A8">🛍️ Shop</text>
+        <!-- Create Post -->
+        <rect x="624" y="162" width="64" height="26" rx="13" fill="#0C0C10"/>
+        <text x="656" y="179" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="white">+ Create</text>
+      </svg>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="insight-lbl">Why Audio and Shop tabs matter</div>
+    <p>The Audio tab is the platform's most strategically important UI decision at the profile level. Giving audio a first-class tab signals to music creators, podcasters, and spoken word artists that INRCLIQ was designed with them in mind. <strong>No other major platform makes this statement.</strong> The Shop tab turns the creator profile into a storefront — removing the need for external links and keeping the fan on-platform through the entire purchase journey.</p>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">09</div>
+  <h2 class="sec-title">Subscription tiers and locked content</h2>
+  <div class="sec-body"><p>Every post a creator publishes has an audience setting that determines who can see it. The tier system connects post creation to subscription revenue in a direct, visible way. The creator always knows who they are writing for. The fan always knows what they need to unlock more.</p></div>
+  <div class="tiers">
+    <div class="tier">
+      <div class="tier-name">Free — Public</div>
+      <ul class="tier-list">
+        <li>All logged-in users</li><li>Visible in discovery</li><li>Logged-out preview</li><li>No direct revenue</li>
+      </ul>
+    </div>
+    <div class="tier t1">
+      <div class="tier-name">Tier 1 — Subscriber</div>
+      <ul class="tier-list">
+        <li>Paid subscribers only</li><li>Locked on feed for others</li><li>Subscribe CTA shown</li><li>Core revenue driver</li>
+      </ul>
+    </div>
+    <div class="tier t2">
+      <div class="tier-name">Tier 2 — Premium</div>
+      <ul class="tier-list">
+        <li>Higher-tier subscribers</li><li>Upgrade CTA for T1 fans</li><li>Upsell mechanism</li><li>Premium content signal</li>
+      </ul>
+    </div>
+    <div class="tier ppv">
+      <div class="tier-name">PPV — Pay Per View</div>
+      <ul class="tier-list">
+        <li>Individual post purchase</li><li>No subscription needed</li><li>Creator sets the price</li><li>One-off unlock</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sketch">
+    <div class="sketch-bar">Wireframe skeleton — locked post states on the fan feed</div>
+    <div class="sketch-body" style="display:block;padding:24px">
+      <svg width="100%" viewBox="0 0 700 210" role="img" aria-label="Three locked post states">
+        <!-- Public -->
+        <rect x="0" y="0" width="215" height="200" rx="10" fill="white" stroke="#E8E8E4" stroke-width="0.5"/>
+        <circle cx="24" cy="24" r="14" fill="#E8E8E4"/>
+        <rect x="46" y="16" width="80" height="10" rx="3" fill="#E8E8E4"/>
+        <rect x="46" y="30" width="50" height="8" rx="3" fill="#E8E8E4"/>
+        <rect x="12" y="48" width="190" height="90" rx="6" fill="#E8E8E4"/>
+        <rect x="12" y="146" width="140" height="8" rx="3" fill="#E8E8E4"/>
+        <rect x="12" y="162" width="100" height="8" rx="3" fill="#E8E8E4"/>
+        <rect x="12" y="177" width="64" height="18" rx="9" fill="#ECFDF5"/>
+        <text x="44" y="189" text-anchor="middle" font-family="serif" font-size="10">🌍</text>
+        <text x="58" y="190" font-family="DM Sans,sans-serif" font-size="10" fill="#047857"> Public</text>
+        <!-- Subscriber locked -->
+        <rect x="243" y="0" width="215" height="200" rx="10" fill="white" stroke="#BFDBFE" stroke-width="1.5"/>
+        <rect x="243" y="0" width="72" height="18" rx="9" fill="#1D4ED8"/>
+        <text x="279" y="13" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="white" font-weight="600">Tier 1 only</text>
+        <circle cx="267" cy="32" r="14" fill="#E8E8E4"/>
+        <rect x="289" y="24" width="80" height="10" rx="3" fill="#E8E8E4"/>
+        <rect x="289" y="38" width="50" height="8" rx="3" fill="#E8E8E4"/>
+        <rect x="255" y="52" width="190" height="90" rx="6" fill="#DBEAFE"/>
+        <text x="350" y="101" text-anchor="middle" font-family="serif" font-size="32">🔒</text>
+        <text x="350" y="152" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#9898A8">Subscribe to unlock</text>
+        <rect x="255" y="162" width="190" height="30" rx="15" fill="#1D4ED8"/>
+        <text x="350" y="181" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="white">Subscribe — £5/month</text>
+        <!-- PPV -->
+        <rect x="486" y="0" width="214" height="200" rx="10" fill="white" stroke="#E8C87A" stroke-width="1.5"/>
+        <rect x="486" y="0" width="60" height="18" rx="9" fill="#B45309"/>
+        <text x="516" y="13" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="white" font-weight="600">PPV £2.99</text>
+        <circle cx="510" cy="32" r="14" fill="#E8E8E4"/>
+        <rect x="532" y="24" width="80" height="10" rx="3" fill="#E8E8E4"/>
+        <rect x="532" y="38" width="50" height="8" rx="3" fill="#E8E8E4"/>
+        <rect x="498" y="52" width="190" height="90" rx="6" fill="#FBF6EC"/>
+        <text x="593" y="101" text-anchor="middle" font-family="serif" font-size="32">🔓</text>
+        <text x="593" y="152" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#9898A8">Unlock this post once</text>
+        <rect x="498" y="162" width="190" height="30" rx="15" fill="#B45309"/>
+        <text x="593" y="181" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="white">Unlock for £2.99</text>
+      </svg>
+    </div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">10</div>
+  <h2 class="sec-title">The 5-3-1 content strategy — built into the platform</h2>
+  <div class="sec-body">
+    <p>The 5-3-1 rule is a proven engagement framework. For every 9 posts: 5 deliver pure value, 3 build community, 1 is a direct call to action. Creators who maintain this ratio consistently outperform those who post without strategy. INRCLIQ should build it in — not as a rule, but as a visible growth tool embedded in the composer and insights dashboard.</p>
+  </div>
+  <div class="rule531">
+    <div class="r531 five">
+      <div class="r531-lbl">Value content</div>
+      <div class="r531-desc">Educational, entertaining, inspiring. Serves the audience with no ask in return. Builds trust and reach.</div>
+      <div class="r531-num">5</div>
+    </div>
+    <div class="r531 three">
+      <div class="r531-lbl">Community content</div>
+      <div class="r531-desc">Behind-the-scenes, creator story, soft preview. Builds intimacy and connection.</div>
+      <div class="r531-num">3</div>
+    </div>
+    <div class="r531 one">
+      <div class="r531-lbl">Conversion</div>
+      <div class="r531-desc">Direct CTA. Subscribe, buy, book. Earns the right to ask.</div>
+      <div class="r531-num">1</div>
+    </div>
+  </div>
+  <div class="feat-grid">
+    <div class="feat ai"><div class="feat-title">01 &nbsp; Content type tagging</div><div class="feat-body">Before publishing, creator optionally tags post intent — Value, Community, or Promotional. One tap, three chips. Platform tracks the mix over time and surfaces it in creator insights.</div></div>
+    <div class="feat ai"><div class="feat-title">02 &nbsp; Content mix insight</div><div class="feat-body">Creator dashboard shows a 5-3-1 visualisation across recent posts. If over-indexed on promotional: "Your engagement is down — try a value post next." Soft, data-driven nudge.</div></div>
+    <div class="feat ai"><div class="feat-title">03 &nbsp; Scheduling with ratio view</div><div class="feat-body">When scheduling multiple posts, the calendar highlights content mix across the upcoming queue. Promotional posts flagged amber, value posts green. Creator sees the ratio before anything publishes.</div></div>
+    <div class="feat ai"><div class="feat-title">04 &nbsp; AI content type suggestion</div><div class="feat-body">AI reads the draft and suggests which 5-3-1 type it matches. "This reads as promotional. Your last 4 posts were also promotional — a value post next would protect engagement."</div></div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">11</div>
+  <h2 class="sec-title">AI features in the composer</h2>
+  <div class="sec-body"><p>Six AI features are proposed. The competitor research highlights AI disclosure support as a recommendation across TikTok, YouTube, LinkedIn and X. AI assistance in content creation is moving from a differentiator to a baseline expectation.</p></div>
+  <div class="feat-grid">
+    <div class="feat ai"><div class="feat-title">✦ Caption AI</div><div class="feat-body">Creator uploads an image. AI suggests a caption based on visual content analysis. One tap to use, fully editable before publishing. Reduces blank-page friction for visual creators.</div></div>
+    <div class="feat ai"><div class="feat-title">✦ Writing improvement</div><div class="feat-body">Creator writes text, taps AI assist. Options: Make shorter, More engaging, Fix grammar, Translate. Pattern from LinkedIn's inline AI assist — proven and familiar interaction.</div></div>
+    <div class="feat ai"><div class="feat-title">✦ Hashtag suggestions</div><div class="feat-body">After writing, AI analyses content and suggests relevant hashtags based on post category and trending tags on INRCLIQ. Creator selects from suggestions with one tap.</div></div>
+    <div class="feat ai"><div class="feat-title">✦ Content check</div><div class="feat-body">Before publishing, AI scans against INRCLIQ content guidelines. Particularly important given age restriction requirements — flags content needing a warning or parental restriction.</div></div>
+    <div class="feat ai"><div class="feat-title">✦ AI disclosure label</div><div class="feat-body">If AI was used to generate or significantly edit content, a disclosure option is available. TikTok and YouTube both support this. Increasingly a regulatory expectation. Toggle in publishing settings.</div></div>
+    <div class="feat ai"><div class="feat-title">✦ Content type suggestion</div><div class="feat-body">AI reads the post and suggests the 5-3-1 type it matches. "This reads as promotional. Your last 4 posts were also promotional — a value post next would protect engagement."</div></div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">12</div>
+  <h2 class="sec-title">Web-first, responsive — both breakpoints matter equally</h2>
+  <div class="sec-body"><p>INRCLIQ is web-first at this stage with responsive mobile support. The composer needs to be designed for both surfaces with equal care. Different interaction patterns, same feature set.</p></div>
+  <div class="feat-grid">
+    <div class="feat"><div class="feat-num">↔</div><div class="feat-title">Desktop — two column</div><div class="feat-body">Composer left two-thirds. Publishing panel right (audience, scheduling, monetisation, merch, content warning, collection). Drag and drop for media. Keyboard shortcuts: Cmd+Return publish, Cmd+S draft, Cmd+/ AI assist.</div></div>
+    <div class="feat"><div class="feat-num">↕</div><div class="feat-title">Mobile — single column</div><div class="feat-body">Full-width composer. Publishing settings via sticky bottom toolbar. Tap to expand each section. Format selection via bottom sheet. Product link via merch shelf bottom sheet. Same features, adapted for touch.</div></div>
+    <div class="feat"><div class="feat-num">⊞</div><div class="feat-title">Tablet — hybrid</div><div class="feat-body">At 768px–1024px, composer fills width with publishing settings in a collapsible panel. A distinct third layout state — not simply desktop or mobile scaled.</div></div>
+    <div class="feat"><div class="feat-num">⌨</div><div class="feat-title">Keyboard shortcuts — web</div><div class="feat-body">Cmd+Return publish. Cmd+S draft. Cmd+Shift+P preview. Cmd+/ AI assist. Table stakes for a web-first publishing tool — must be defined in the design spec before development handoff.</div></div>
+  </div>
+</div>
+<hr class="rule">
+
+<div class="section">
+  <div class="sec-num">13</div>
+  <h2 class="sec-title">What to address in the current Figma</h2>
+  <div class="checklist">
+    <div class="chk keep"><span class="chk-icon">✓</span><div><div class="chk-title">Keep — Preview post button</div><div class="chk-body">Already exists and is correct. Needs to show an accurate feed preview including audience tier badge and locked state.</div></div></div>
+    <div class="chk keep"><span class="chk-icon">✓</span><div><div class="chk-title">Keep — Two-step flow concept</div><div class="chk-body">Post information then publishing options is the right structure. The content of each step needs updating, not the structure itself.</div></div></div>
+    <div class="chk remove"><span class="chk-icon">✕</span><div><div class="chk-title">Remove — Three separate type-first composer screens</div><div class="chk-body">Replace with one adaptive composer. Format determined by what media is attached — not by an upfront choice.</div></div></div>
+    <div class="chk remove"><span class="chk-icon">✕</span><div><div class="chk-title">Remove — Video URL and Vimeo as primary video option</div><div class="chk-body">Direct video upload should be the primary path. URL embedding is a secondary fallback only. Three years behind user expectations.</div></div></div>
+    <div class="chk remove"><span class="chk-icon">✕</span><div><div class="chk-title">Remove — "Description" as the text field label</div><div class="chk-body">Replace with unlabelled field and placeholder "Write something..." — the pattern used by every major social platform.</div></div></div>
+    <div class="chk remove"><span class="chk-icon">✕</span><div><div class="chk-title">Remove — Creator-only dashboard as the post creation gate</div><div class="chk-body">Post creation must be accessible from the main navigation to all logged-in users.</div></div></div>
+    <div class="chk change"><span class="chk-icon">↻</span><div><div class="chk-title">Update — Profile tabs to function-first structure</div><div class="chk-body">All / Posts / Videos / Audio / Shop. Eliminates the categorisation overlap and aligns tabs with platform business function.</div></div></div>
+    <div class="chk change"><span class="chk-icon">↻</span><div><div class="chk-title">Update — Audience and visibility controls to step 1</div><div class="chk-body">Audience decision shapes content — inline at the top of the composer, not buried in a separate publishing step.</div></div></div>
+    <div class="chk change"><span class="chk-icon">↻</span><div><div class="chk-title">Update — Tags field to hashtag-aware autocomplete</div><div class="chk-body">Show trending hashtag suggestions as the creator types. AI hashtag suggestions augment this further.</div></div></div>
+    <div class="chk change"><span class="chk-icon">↻</span><div><div class="chk-title">Resolve — Two "Not in Design" flagged screens</div><div class="chk-body">Both the text post and video post screens carry red "Not in Design" badges. Must be confirmed before redesign begins.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Subscription tier selector inline in composer</div><div class="chk-body">Free, Tier 1, Tier 2, PPV — selectable at the top of the composer. The commercial core of the platform must be visible from the first moment of composition.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Locked post viewing states on the fan feed</div><div class="chk-body">Public (fully visible), subscriber-locked (blurred with subscribe CTA), PPV (blurred with one-off purchase CTA). These are the conversion moments that drive subscription revenue.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Merch product link in composer + creator Shop tab on profile</div><div class="chk-body">Product link icon in composer toolbar opens product shelf. Shop tab on creator profile shows full catalogue. Cart and checkout flow stays on-platform.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Audio post format as a first-class type</div><div class="chk-body">Waveform visualisation, playback controls, timestamp-based comments, subscription gating. Audio tab on creator profile.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Poll as an inline composer format</div><div class="chk-body">Poll available as a content type within the Post composer. Fast to create, high engagement return.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Content type tagging (5-3-1 framework)</div><div class="chk-body">Value, Community, Promotional chips in the composer. Optional, one tap. Platform tracks the mix and surfaces insights in the creator dashboard.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Draft autosave and draft management</div><div class="chk-body">Every keystroke saves. Creator can close and return to draft intact. Draft list with resume and delete. Drafts do not expire.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Upload lifecycle states</div><div class="chk-body">Uploading, processing, ready to publish, published, failed with retry. YouTube's approach is the reference. No processing states currently exist.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Collections and content organisation</div><div class="chk-body">Group content into series. Collection assignment in publishing settings. Collection view on creator profile.</div></div></div>
+    <div class="chk add"><span class="chk-icon">+</span><div><div class="chk-title">Add — Audio layer in the Reel composer</div><div class="chk-body">Music search, audio upload, and volume controls in the Reel creation flow. Structurally disadvantaged versus TikTok without this.</div></div></div>
+  </div>
+</div>
+
+<div class="closing">
+  <h2>The opportunity</h2>
+  <p>Most creator platforms build a neutral publishing tool and leave creators to figure out their strategy independently. The highest-performing platforms — Patreon, YouTube, increasingly Instagram — are moving toward guided publishing that actively helps creators succeed.</p>
+  <p>INRCLIQ has the opportunity to build a composer that is as fast as Threads to open, as powerful as Patreon to monetise, and as smart as LinkedIn to refine. Positioning each content format as a business instrument — Reels for growth, Posts for retention, Video for upsell, Audio for differentiation, Polls for amplification, Merch for direct commerce — gives the platform a coherent creator growth architecture that competitors do not have.</p>
+  <p>Audio as a first-class format and Merch as a native commerce layer are the two clearest differentiators available. No competitor owns audio at the creator profile level. And giving creators a native product shelf — linked directly from posts — removes the friction that causes creators to leave for platforms with better commerce tools.</p>
+</div>
+
+</div></body></html>
